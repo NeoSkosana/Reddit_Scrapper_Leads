@@ -24,14 +24,35 @@ scraper:
   include_comments: true
   rate_limit_per_minute: 60         # Reddit API rate limit
 
-# OpenAI settings
-openai:
-  model_filter: gpt-4o-mini        # For pre-filtering stage
-  model_deep: gpt-4.1               # For insight extraction
-  use_batch_api: true
-  monthly_budget_usd: 100           # Cost cap for safety
-  max_tokens_per_post: 1000         # Estimate for budgeting
-  cache_input: true                 # Reuse prompt if post is nearly identical
+# API Keys
+api_keys:
+  deepseek: "your-deepseek-api-key"
+  clickbank: "your-clickbank-api-key" 
+  shareasale: "your-shareasale-api-key"
+  impactradius: "your-impact-api-key"
+  openai:
+    model_filter: gpt-4o-mini
+    model_deep: gpt-4.1
+    use_batch_api: true
+    monthly_budget_usd: 100
+    max_tokens_per_post: 1000
+    cache_input: true
+
+# Affiliate Networks
+networks:
+  clickbank:
+    base_url: "https://www.clickbank.com/marketplace/ai-tools/"
+  shareasale:
+    base_url: "https://www.shareasale.com/ai-saas/"
+  impactradius:
+    base_url: "https://app.impact.com/"
+
+# Content Generation
+content:
+  linkedin:
+    article_length: 1500
+  reddit:
+    post_length: 300
 
 # Scoring weights (used in filtering and final ranking)
 scoring:

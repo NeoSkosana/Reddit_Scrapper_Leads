@@ -2,11 +2,41 @@
 
 import os
 import sys
-from scheduler.runner import run_daily_pipeline
+from src.scrapers.offer_scraper import OfferScraper
+from src.generators.content_generator import ContentGenerator
+from config.config_loader import get_config
+from db.writer import DatabaseWriter
 from utils.logger import setup_logger
 from db.schema import create_tables
 from scheduler.cost_tracker import initialize_cost_tracking
 from utils.helpers import ensure_directory_exists
+
+def main():
+    # Load config
+    config = get_config()
+    
+    # Initialize components
+    offer_scraper = OfferScraper()
+    content_gen = ContentGenerator(config['api_keys']['deepseek'])
+    db_writer = DatabaseWriter()
+    
+    # Get top offers
+    top_offers = offer_scraper.get_top_offers(limit=10)
+    
+    for offer in top_offers:
+        # Generate content
+        article = content_gen.generate_linkedin_article(offer)
+        reddit_post = content_gen.generate_reddit_post({
+            'tool_name': offer['name'],
+            'article_link': article['url']
+        })
+        
+        # Store in database
+        db_writer.save_content({
+            'offer': offer,
+            'article': article,
+            'reddit_post': reddit_post
+        })
 
 
 def setup_environment():
