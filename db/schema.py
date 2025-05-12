@@ -41,6 +41,28 @@ def create_tables():
     """)
 
     c.execute("""
+    CREATE TABLE IF NOT EXISTS offers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        network TEXT NOT NULL,
+        payout INTEGER NOT NULL,
+        url TEXT NOT NULL,
+        created_at TEXT NOT NULL
+    );
+    """)
+
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS content (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        offer_id INTEGER NOT NULL,
+        linkedin_article TEXT NOT NULL,
+        reddit_post TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        FOREIGN KEY (offer_id) REFERENCES offers (id)
+    );
+    """)
+
+    c.execute("""
     CREATE TABLE IF NOT EXISTS history (
         id TEXT PRIMARY KEY,
         processed_at TEXT
