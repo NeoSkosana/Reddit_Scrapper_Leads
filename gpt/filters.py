@@ -6,6 +6,7 @@ from typing import List, Dict
 from utils.helpers import estimate_tokens, sanitize_text
 from utils.logger import setup_logger
 from config.config_loader import get_config
+from gpt.filters.cpa_lead_filter import score_cpa_lead
 
 log = setup_logger()
 config = get_config()

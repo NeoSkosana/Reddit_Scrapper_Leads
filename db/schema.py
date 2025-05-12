@@ -5,6 +5,7 @@ import os
 from config.config_loader import get_config
 from utils.logger import setup_logger
 from utils.helpers import ensure_directory_exists
+from models.cpa_conversion import CPAConversion
 
 log = setup_logger()
 config = get_config()

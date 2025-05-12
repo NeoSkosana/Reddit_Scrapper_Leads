@@ -52,3 +52,23 @@ save_batch_payloads: true           # For debug & reuse
 
 cleanup:
   batch_response_retention_days: 3 # Cleanup batch responses older than this
+
+cpa_settings:
+  target_subreddits:
+    crypto:
+      - "CryptoCurrency" 
+      - "BitcoinBeginners"
+    health:
+      - "Supplements"
+      - "Fitness"
+    dating:
+      - "DatingApps"
+      - "Relationships"
+    saas:
+      - "SaaS"
+      - "Entrepreneur"
+  
+  lead_scoring:
+    pain_point_weight: 2.0
+    competitor_mentions_weight: 1.5
+    budget_keywords_weight: 1.0
