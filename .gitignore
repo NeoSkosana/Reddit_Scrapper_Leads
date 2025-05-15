@@ -4,6 +4,7 @@
 env/
 venv/
 ENV/
+.qodo/
 
 # Python cache files
 __pycache__/
