@@ -1,0 +1,130 @@
+---
+id: 9152fe94-7122-41dc-b688-e7e02cd39f88
+---
+graph TB
+    %% Main Components
+    User[User/Admin]
+    Scheduler[Daily Scheduler]
+    
+    %% Core Modules
+    subgraph Core["Reddit Scraper Core"]
+        Main[Main Pipeline]
+        RedditScraper[Reddit Scraper]
+        GPTFilter[GPT Filter]
+        GPTInsight[GPT Insight Extractor]
+        BatchAPI[OpenAI Batch API]
+        DB[(SQLite Database)]
+    end
+    
+    %% External Services
+    subgraph External["External Services"]
+        RedditAPI[Reddit API]
+        OpenAI[OpenAI API]
+    end
+    
+    %% Supporting Modules
+    subgraph Support["Supporting Modules"]
+        Config[Configuration]
+        Logger[Logging System]
+        CostTracker[Cost Tracker]
+        RateLimiter[Rate Limiter]
+        Discovery[Subreddit Discovery]
+        Helpers[Helper Utilities]
+    end
+    
+    %% Data Stores
+    subgraph Storage["Data Storage"]
+        Database[(SQLite Database)]
+        BatchFiles[Batch Request Files]
+        ExploratorySubreddits[Exploratory Subreddits]
+        LogFiles[Log Files]
+    end
+    
+    %% Flow Connections - Main Pipeline
+    User --> |"1. Starts/Configures"| Main
+    Scheduler --> |"1. Triggers Daily at 8:00 UTC"| Main
+    
+    Main --> |"2. Initializes Environment"| Config
+    Main --> |"3. Scrapes Reddit"| RedditScraper
+    Main --> |"4. Filters Posts"| GPTFilter
+    Main --> |"5. Extracts Insights"| GPTInsight
+    
+    %% Reddit Scraping Flow
+    RedditScraper --> |"3.1 Fetches Posts"| RedditAPI
+    RedditScraper --> |"3.2 Checks History"| DB
+    RedditScraper --> |"3.3 Discovers New"| Discovery
+    Discovery --> |"3.4 Suggests"| ExploratorySubreddits
+    RedditScraper --> |"3.5 Controls API Rate"| RateLimiter
+    RedditScraper --> |"3.6 Stores Posts"| DB
+    
+    %% GPT Processing Flow
+    GPTFilter --> |"4.1 Batch Processing"| BatchAPI
+    GPTInsight --> |"5.1 Batch Processing"| BatchAPI
+    BatchAPI --> |"API Calls"| OpenAI
+    BatchAPI --> |"Stores Requests"| BatchFiles
+    BatchAPI --> |"Tracks Costs"| CostTracker
+    
+    GPTFilter --> |"4.2 Updates Relevance"| DB
+    GPTInsight --> |"5.2 Updates with Tags & ROI"| DB
+    
+    %% Supporting Connections
+    Config --> |"Loads Settings"| Main
+    Config --> |"Provides API Keys"| RedditAPI
+    Config --> |"Provides API Keys"| OpenAI
+    
+    Logger --> |"Records Activity"| LogFiles
+    CostTracker --> |"Enforces Budget Limits"| BatchAPI
+    
+    %% Database Schema
+    subgraph Schema["Database Schema"]
+        Posts["Posts Table
+        - id (PK)
+        - title
+        - body
+        - subreddit
+        - relevance_score
+        - roi_weight
+        - tags
+        - type (post/comment)"]
+        
+        History["History Table
+        - id (PK)
+        - processed_at"]
+        
+        Offers["Offers Table
+        - id (PK)
+        - name
+        - network
+        - payout"]
+        
+        Content["Content Table
+        - id (PK)
+        - offer_id (FK)
+        - linkedin_article
+        - reddit_post"]
+    end
+    
+    DB --> Posts
+    DB --> History
+    DB --> Offers
+    DB --> Content
+    
+    %% Data Flow
+    classDef primary fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef external fill:#bbf,stroke:#333,stroke-width:1px;
+    classDef support fill:#bfb,stroke:#333,stroke-width:1px;
+    classDef storage fill:#fbb,stroke:#333,stroke-width:1px;
+    classDef schema fill:#fffacd,stroke:#333,stroke-width:1px;
+    
+    class Main,RedditScraper,GPTFilter,GPTInsight,BatchAPI primary;
+    class RedditAPI,OpenAI external;
+    class Config,Logger,CostTracker,RateLimiter,Discovery,Helpers support;
+    class Database,BatchFiles,ExploratorySubreddits,LogFiles storage;
+    class Posts,History,Offers,Content schema;
+    
+    %% Title and Description
+    title[Reddit Scraper Architecture]
+    description["A system that scrapes Reddit for marketing leads, analyzes them with GPT models, and identifies high-value opportunities"]
+    
+    style title fill:#fff,stroke:none,font-size:18px,font-weight:bold
+    style description fill:#fff,stroke:none,font-style:italic
